@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
 
 const Box = ({ position, name }) => {
-	// position[]: [x, y, z], name: 'A' or 'B' or else
+	const instanceRef = useRef();
+	const materialRef = useRef();
+
+	useEffect(() => {
+		console.log({ instanceRef, materialRef });
+	}, []);
 
 	return (
-		<mesh position={position} name={name}>
+		<mesh position={position} name={name} ref={instanceRef}>
 			<boxGeometry />
-			<meshBasicMaterial color={0x00ff00} wireframe />
+			<meshBasicMaterial color={0x00ff00} wireframe ref={materialRef} />
 		</mesh>
 	);
 };
