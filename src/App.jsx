@@ -22,8 +22,18 @@ export default function App() {
         minPolarAngle={Math.PI / 6}
         maxPolarAngle={Math.PI - Math.PI / 6}
       />
-      <axesHelper args={[15]} />
+      {/* 일반 */}
+      <gridHelper args={[20, 20, 'red', 'teal']} />
+      {/* 피어싱 */}
+      {/* <gridHelper rotation={[Math.PI / 4, 0, 0]} /> */}
       <Stats />
     </Canvas>
   );
 }
+
+/*
+	gridHelper: 개발단계에서 바닥면 위치를 확인하기 위해 사용
+	args: [size, divisions, color1(InnerLine), color2(OuterLine)]
+	size: 격자의 길이
+	divisions: 바닥면을 몇 개의 격자로 나눌 것인지를 결정
+*/
