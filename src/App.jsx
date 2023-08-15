@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stats, OrbitControls } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
+import { useControls } from 'leva';
 import * as THREE from 'three';
 import Polyhedron from './Polyhedron';
 
@@ -10,30 +12,42 @@ export default function App() {
     new THREE.DodecahedronGeometry(0.785398),
   ];
 
+  const options = useMemo(() => {
+    return {
+      x: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
+      y: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
+      z: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
+      visible: true,
+      color: { value: '#ffffff' },
+    };
+  }, []);
+
+  const polyhedronA = useControls('Polyhedron A', options);
+  const polyhedronB = useControls('Polyhedron B', options);
+
   return (
-    <Canvas camera={{ position: [0, 0, 3] }}>
-      <Polyhedron position={[-0.75, -0.75, 0]} polyhedron={polyhedron} />
-      <Polyhedron position={[0.75, -0.75, 0]} polyhedron={polyhedron} />
-      <Polyhedron position={[-0.75, 0.75, 0]} polyhedron={polyhedron} />
-      <Polyhedron position={[0.75, 0.75, 0]} polyhedron={polyhedron} />
-      <OrbitControls
-        minAzimuthAngle={-Math.PI / 4}
-        maxAzimuthAngle={Math.PI / 4}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI - Math.PI / 6}
+    <Canvas camera={{ position: [-1, 1, 0] }}>
+      <Polyhedron
+        position={[-0.75, -0.75, 0]}
+        rotation={[polyhedronA.x, polyhedronA.y, polyhedronA.z]}
+        visible={polyhedronA.visible}
+        color={polyhedronA.color}
+        polyhedron={polyhedron}
       />
-      {/* 일반 */}
-      <gridHelper args={[20, 20, 'red', 'teal']} />
-      {/* 피어싱 */}
-      {/* <gridHelper rotation={[Math.PI / 4, 0, 0]} /> */}
-      <Stats />
+      <Polyhedron
+        position={[1, 1, 0]}
+        rotation={[polyhedronB.x, polyhedronB.y, polyhedronB.z]}
+        visible={polyhedronB.visible}
+        color={polyhedronB.color}
+        polyhedron={polyhedron}
+      />
+
+      <OrbitControls target-y={1} />
     </Canvas>
   );
 }
 
 /*
-	gridHelper: 개발단계에서 바닥면 위치를 확인하기 위해 사용
-	args: [size, divisions, color1(InnerLine), color2(OuterLine)]
-	size: 격자의 길이
-	divisions: 바닥면을 몇 개의 격자로 나눌 것인지를 결정
+	leva의 useControls를 사용하여 컨트롤러 GUI와 로직을 쉽게 구현 가능하다.
+	자사 앱에서 소비자가 조작하는 뷰어 옵션 컨트롤과 쇼핑몰 관리자의 뷰어 옵션 수정 기능에 사용 가능
 */
