@@ -1,32 +1,41 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import { useControls } from 'leva';
+import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 
-export default function Polyhedron({ polyhedron, color, ...props }) {
+export default function Polyhedron(props) {
   const ref = useRef();
-  const [count, setCount] = useState(0);
-
-  console.log(polyhedron);
 
   useFrame((_, delta) => {
-    ref.current.rotation.x += delta;
-    ref.current.rotation.y += 0.5 * delta;
+    ref.current.rotation.x += 0.2 * delta;
+    ref.current.rotation.y += 0.05 * delta;
+  });
+
+  useControls(props.name, {
+    wireFrame: {
+      value: false,
+      onChange: (value) => {
+        ref.current.material.wireframe = value;
+      },
+    },
+    flatShading: {
+      value: true,
+      onChange: (value) => {
+        ref.current.material.flatShading = value;
+        ref.current.material.needsUpdate = true;
+      },
+    },
+    color: {
+      value: '#ffffff',
+      onChange: (value) => {
+        ref.current.material.color = new THREE.Color(value);
+      },
+    },
   });
 
   return (
-    <mesh
-      {...props}
-      ref={ref}
-      onPointerDown={() => {
-        setCount((count + 1) % 3);
-      }}
-      geometry={polyhedron[count]}
-    >
-      <meshBasicMaterial color={color} wireframe />
+    <mesh {...props} ref={ref}>
+      <icosahedronGeometry args={[1, 1]} />
     </mesh>
   );
 }
-
-/*
-  이전 useMemo 예제보다 더 복잡한 어플리케이션에서 동적으로 geometry를 변경하는 경우의 예제이다.
-  useMemo 훅을 사용하여 geometry 인스턴스를 생성하고 캐싱하여 사용하는 대신 부모 컴포넌트에서 생성해둔 geometry 인스턴스를 props로 받아서 사용하였다.
-*/
