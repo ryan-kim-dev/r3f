@@ -2,16 +2,16 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 export default function Polyhedron(props) {
-  const ref = useRef();
+	const ref = useRef();
 
-  useFrame((_, delta) => {
-    ref.current.rotation.x += 0.2 * delta;
-    ref.current.rotation.y += 0.05 * delta;
-  });
+	useFrame((_, delta) => {
+		ref.current.rotation.x += 0.2 * delta;
+		ref.current.rotation.y += 0.05 * delta;
+	});
 
-  return (
-    <mesh {...props} ref={ref}>
-      <icosahedronGeometry args={[1, 1]} />
-    </mesh>
-  );
+	return (
+		<mesh {...props} ref={ref} castShadow>
+			<icosahedronGeometry args={[1, 1]} />
+		</mesh>
+	);
 }
